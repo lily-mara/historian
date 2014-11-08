@@ -14,6 +14,7 @@
 		editor.setHighlightActiveLine(false);
 		editor.getSession().setUseWrapMode(true);
 		editor.setTheme("ace/theme/twilight");
+		editor.getSession().setUseSoftTabs(false);
 
 		$('a.submit').click(function() {
 			$.post('/{{ user }}/{{ repo }}', { 'data': editor.getValue() }, function() {
