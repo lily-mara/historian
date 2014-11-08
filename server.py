@@ -24,13 +24,13 @@ class RepoHandler(tornado.web.RequestHandler):
 	def get(self, user, repo):
 		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
 			with open(os.path.join('data', user, repo, 'data.txt')) as data_file:
-				data = ''.join(data_file.readlines()).replace('\n', ' ')
+				data = ''.join(data_file.readlines()).replace('\n', ' ').replace('$NEWLINE', '\n')
 			self.render('repo.html', data=data, user=user, repo=repo)
 		else:
 			self.finish('REPO NOT FOUND')
 
 	def post(self, user, repo):
-		data = self.get_argument('data').replace(' ', '\n')
+		data = self.get_argument('data').replace('\n', '$NEWLINE').replace(' ', '\n')
 		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
 			with open(os.path.join('data', user, repo, 'data.txt'), 'w') as data_file:
 				data_file.writelines(data)
