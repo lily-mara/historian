@@ -3,6 +3,13 @@ Historian
 
 Version Control for Normal People
 
+Who
+---
+
+We are members of Miami University's chapter of the ACM. We are writing this application
+as our submission for the [Do Something Awesome](https://github.com/miami-acm/do-something-awesome)
+competition put on by Miami's ACM.
+
 Why
 ---
 
