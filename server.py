@@ -20,8 +20,14 @@ class MainHandler(tornado.web.RequestHandler):
 		self.render('index.html')
 
 
+class RepoHandler(tornado.web.RequestHandler):
+	def get(self, user, repo):
+		self.render('repo.html', user=user, repo=repo)
+
+
 handlers = [
 	(r'/', MainHandler),
+	(r'/([^/]+)/([^/]+)', RepoHandler),
 ]
 
 settings = {
