@@ -24,4 +24,9 @@ What
 
 Historian is a simple version control system for people unfamiliar with such systems.
 It is a web application that will allow users to edit plain text files and commit them
-to Git repositories while abstracting away Git's Torvaldian interface.
+to Git repositories while abstracting away Git's Torvaldian interface. It will be:
+
+- Web-based
+- Allow editing of plain-text files
+- Allow diffing between commits
+- Allow user to set commit author during commit writing
