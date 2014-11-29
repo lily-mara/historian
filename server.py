@@ -57,11 +57,11 @@ class CommitsHandler(tornado.web.RequestHandler):
 
 	def commits(self):
 		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
-		commit_text = run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
+		commit_text = run_process(['git', 'log', '--all', '--pretty="%ci -- %s -- %H"'])
 
 		os.chdir(BASE_PATH)
 
-		message = re.compile('(.*) -- (.*)')
+		message = re.compile('(.*) -- (.*) -- (.*)')
 
 		commit_objs = []
 		for commit in commit_text:
@@ -69,8 +69,9 @@ class CommitsHandler(tornado.web.RequestHandler):
 			commit_time = datetime.strptime(message.search(line).group(1), '%Y-%m-%d %H:%M:%S %z')
 			commit_message = '"{}"'.format(message.search(line).group(2))
 			time_string = commit_time.strftime('%Y-%m-%d - %H:%M')
+			commit_hash = message.search(line).group(3)
 
-			commit_objs.append((commit_message, time_string))
+			commit_objs.append((commit_message, time_string, commit_hash))
 
 		return commit_objs
 
