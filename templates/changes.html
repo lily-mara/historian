@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+	<a href="edit">EDIT</a>
 	<ul>
 		{% for c in commits %}
 			<li>{{ c.time_string }} -- <a href="change/{{ c.ref_hash }}">{{ c.message }}</a></li>
