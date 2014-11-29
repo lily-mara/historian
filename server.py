@@ -5,6 +5,7 @@ import argparse
 import subprocess
 import locale
 import re
+from datetime import datetime
 
 import tornado.ioloop
 import tornado.web
@@ -49,20 +50,21 @@ class CommitsHandler(tornado.web.RequestHandler):
 
 	def commits(self):
 		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
-		commit_text = [
-			re.match('"([^"]+)"', i.split('\n')[0]).group(1) for i in
-			run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
-		]
+		commit_text = run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
+
 		os.chdir(BASE_PATH)
 
 		message = re.compile('(.*) -- (.*)')
 
-		commit_objs = [
-			(message.search(i).group(1), message.search(i).group(2))
-			for i in commit_text
-		]
+		commit_objs = []
+		for commit in commit_text:
+			line = re.match('"([^"]+)"', commit.split('\n')[0]).group(1)
+			commit_time = datetime.strptime(message.search(line).group(1), '%Y-%m-%d %H:%M:%S %z')
+			commit_message = message.search(line).group(2)
+			time_string = commit_time.strftime('%Y-%m-%d - %H:%M')
 
-		print( commit_objs)
+			commit_objs.append((commit_message, time_string))
+
 		return commit_objs
 
 class EditHandler(tornado.web.RequestHandler):
