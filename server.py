@@ -21,11 +21,17 @@ def run_process(command):
 
 
 class Commit:
-	def __init__(self, message, time, ref_hash):
-		self.ref_hash = ref_hash
-		self.time = time
-		self.message = message
+	line_pattern = re.compile('(.*) -- (.*) -- (.*)')
 
+	def __init__(self, line):
+		search = Commit.line_pattern.search(line)
+		self.time = datetime.strptime(search.group(1), '%Y-%m-%d %H:%M:%S %z')
+		self.message = '"{}"'.format(search.group(2))
+		self.ref_hash = search.group(3)
+
+	@property
+	def time_string(self):
+		return self.time.strftime('%Y-%m-%d - %H:%M')
 
 def commit(repo, message):
 	os.chdir(os.path.join(BASE_PATH, repo))
@@ -68,17 +74,11 @@ class CommitsHandler(tornado.web.RequestHandler):
 
 		os.chdir(BASE_PATH)
 
-		message = re.compile('(.*) -- (.*) -- (.*)')
-
 		commit_objs = []
-		for commit in commit_text:
-			line = re.match('"([^"]+)"', commit.split('\n')[0]).group(1)
-			commit_time = datetime.strptime(message.search(line).group(1), '%Y-%m-%d %H:%M:%S %z')
-			commit_message = '"{}"'.format(message.search(line).group(2))
-			time_string = commit_time.strftime('%Y-%m-%d - %H:%M')
-			commit_hash = message.search(line).group(3)
+		for line in commit_text:
+			text = re.match('"([^"]+)"', line.split('\n')[0]).group(1)
 
-			commit_objs.append(Commit(commit_message, time_string, commit_hash))
+			commit_objs.append(Commit(text))
 
 		return commit_objs
 
