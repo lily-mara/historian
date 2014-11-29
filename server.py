@@ -20,6 +20,13 @@ def run_process(command):
 		return [line.decode(encoding) for line in  proc.stdout]
 
 
+class Commit:
+	def __init__(self, message, time, ref_hash):
+		self.ref_hash = ref_hash
+		self.time = time
+		self.message = message
+
+
 def commit(repo, message):
 	os.chdir(os.path.join(BASE_PATH, repo))
 	run_process(['git', 'add', 'data.txt'])
@@ -71,7 +78,7 @@ class CommitsHandler(tornado.web.RequestHandler):
 			time_string = commit_time.strftime('%Y-%m-%d - %H:%M')
 			commit_hash = message.search(line).group(3)
 
-			commit_objs.append((commit_message, time_string, commit_hash))
+			commit_objs.append(Commit(commit_message, time_string, commit_hash))
 
 		return commit_objs
 
