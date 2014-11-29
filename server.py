@@ -16,6 +16,13 @@ def run_process(command):
 		return proc.stdout.read()
 
 
+def commit(repo, message):
+	os.chdir(os.path.join(BASE_PATH, repo))
+	run_process(['git', 'add', 'data.txt', message])
+	run_process(['git', 'commit', '-m', message])
+	os.chdir(BASE_PATH)
+
+
 def load_json_file(filename):
 	with open('json/{}'.format(filename), 'r') as jsonfile:
 		return json.load(jsonfile)
@@ -37,9 +44,14 @@ class RepoHandler(tornado.web.RequestHandler):
 
 	def post(self, user, repo):
 		data = self.get_argument('data').replace('\n', '$NEWLINE').replace(' ', '\n')
-		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
-			with open(os.path.join('data', user, repo, 'data.txt'), 'w') as data_file:
+		commit_message = self.get_argument('commit_message')
+		repo_path = data_file('data', user, repo)
+		data_path = os.path.join(repo_path, 'data.txt')
+
+		if os.path.exists(data_path):
+			with open(data_path, 'w') as data_file:
 				data_file.writelines(data)
+			commit(repo_path, commit_message)
 			self.render('repo.html', data=data, user=user, repo=repo)
 		else:
 			self.finish('REPO NOT FOUND')
