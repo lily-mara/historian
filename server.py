@@ -27,10 +27,11 @@ class Commit:
 		if line is not None:
 			self.parse_line(line)
 		else:
-			os.chdir(os.path.join(BASE_PATH, 'data', user, repo))
-			commit_show = run_process(['git', 'show', ref_hash, '--pretty=%ci -- %s -- %H'])
-			os.chdir(BASE_PATH)
+			self.user = user
+			self.repo = repo
+			self.ref_hash = ref_hash
 
+			commit_show = self.commit_text()
 			self.parse_line(commit_show[0])
 
 	def parse_line(self, line):
@@ -45,6 +46,25 @@ class Commit:
 
 	def __str__(self):
 		return '<Commit message:{} hash:{} time:{}>'.format(self.message, self.ref_hash, self.time)
+
+	def commit_text(self):
+		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
+		commit_show = run_process(['git', 'show', self.ref_hash, '--pretty=%ci -- %s -- %H'])
+		os.chdir(BASE_PATH)
+		return commit_show
+
+	@property
+	def diff(self):
+		change_lines = []
+		for line in self.commit_text():
+			if re.match('^[+-]', line):
+				if not re.match('^[+-]{3}', line):
+					if not re.match('^[-+]$', line):
+						line = line.replace('\n', '')
+						line = line.replace('$NEWLINE', '')
+						change_lines.append(line)
+
+		return '\n'.join(change_lines)
 
 def commit(repo, message):
 	os.chdir(os.path.join(BASE_PATH, repo))
