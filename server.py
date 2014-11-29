@@ -4,6 +4,7 @@ import json
 import argparse
 import subprocess
 import locale
+import re
 
 import tornado.ioloop
 import tornado.web
@@ -40,7 +41,7 @@ class CommitsHandler(tornado.web.RequestHandler):
 		self.user = user
 		self.repo = repo
 
-		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, 'data.txt')):
 			commits = self.commits()
 			self.render('changes.html', commits=commits, user=user, repo=repo)
 		else:
@@ -48,12 +49,20 @@ class CommitsHandler(tornado.web.RequestHandler):
 
 	def commits(self):
 		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
-		commit_text = run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
+		commit_text = [
+			re.match('"([^"]+)"', i.split('\n')[0]).group(1) for i in
+			run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
+		]
 		os.chdir(BASE_PATH)
-		print(commit_text)
 
-		commit_objs = []
+		message = re.compile('(.*) -- (.*)')
 
+		commit_objs = [
+			(message.search(i).group(1), message.search(i).group(2))
+			for i in commit_text
+		]
+
+		print( commit_objs)
 		return commit_objs
 
 class EditHandler(tornado.web.RequestHandler):
