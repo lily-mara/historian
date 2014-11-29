@@ -28,3 +28,16 @@ span.addition {
 span.deletion {
 	color: red;
 }
+
+div#commit {
+	position: absolute;
+	top: 5%;
+	right: 20%;
+	bottom: 25%;
+	left: 20%;
+	background: rgba(30, 30, 30, 255);
+}
+
+div#commit-inner {
+	margin: 20px;
+}
