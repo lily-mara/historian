@@ -61,7 +61,13 @@ class Commit:
 				if not re.match('^[+-]{3}', line):
 					if not re.match('^[-+]$', line):
 						line = line.replace('\n', '')
-						line = line.replace('$NEWLINE', '')
+						line = line.replace('$NEWLINE', '</br>')
+						change_word = re.search('^[+-](.*)', line).group(1)
+						if re.match('^\+', line):
+							line = '<span class="addition">{}</span>'.format(change_word)
+						else:
+							line = '<span class="deletion">{}</span>'.format(change_word)
+
 						change_lines.append(line)
 
 		return '\n'.join(change_lines)
