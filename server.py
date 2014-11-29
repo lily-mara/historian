@@ -23,7 +23,17 @@ def run_process(command):
 class Commit:
 	line_pattern = re.compile('(.*) -- (.*) -- (.*)')
 
-	def __init__(self, line):
+	def __init__(self, line=None, ref_hash=None, repo=None, user=None):
+		if line is not None:
+			self.parse_line(line)
+		else:
+			os.chdir(os.path.join(BASE_PATH, 'data', user, repo))
+			commit_show = run_process(['git', 'show', ref_hash, '--pretty=%ci -- %s -- %H'])
+			os.chdir(BASE_PATH)
+
+			self.parse_line(commit_show[0])
+
+	def parse_line(self, line):
 		search = Commit.line_pattern.search(line)
 		self.time = datetime.strptime(search.group(1), '%Y-%m-%d %H:%M:%S %z')
 		self.message = '"{}"'.format(search.group(2))
@@ -32,6 +42,9 @@ class Commit:
 	@property
 	def time_string(self):
 		return self.time.strftime('%Y-%m-%d - %H:%M')
+
+	def __str__(self):
+		return '<Commit message:{} hash:{} time:{}>'.format(self.message, self.ref_hash, self.time)
 
 def commit(repo, message):
 	os.chdir(os.path.join(BASE_PATH, repo))
@@ -50,9 +63,10 @@ class MainHandler(tornado.web.RequestHandler):
 		self.render('index.html')
 
 class SingleCommitHandler(tornado.web.RequestHandler):
-	def get(self, user, repo, commit):
+	def get(self, user, repo, commit_hash):
 		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, 'data.txt')):
-			self.render('commit.html', commit=commit, user=user, repo=repo)
+			c = Commit(ref_hash=commit_hash, user=user, repo=repo)
+			self.render('commit.html', commit=c, user=user, repo=repo)
 		else:
 			self.finish('REPO NOT FOUND')
 
