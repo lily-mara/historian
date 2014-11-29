@@ -23,8 +23,8 @@ There are many options to chose from, and they all have a dedicated user base:
 
 - Git (If you're smart)
 - Mercurial (If you're a hipster)
-- SVN (If you work for old people)
-- CVS (If you hate yourself)
+- CVS (If you work for old people)
+- SVN (If you hate yourself)
 - Bazaar (Nobody)
 
 The problem with all of these tools is that they are designed by software developers,
