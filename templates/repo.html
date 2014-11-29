@@ -22,7 +22,7 @@
 		};
 
 		$('a.submit').click(function() {
-			$.post('/{{ user }}/{{ repo }}', { 'data': editor.getValue(), 'commit_message': commit.getValue() }, function() {
+			$.post('/{{ user }}/{{ repo }}/edit', { 'data': editor.getValue(), 'commit_message': commit.getValue() }, function() {
 				location.reload();
 			});
 		});
