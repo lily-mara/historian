@@ -18,7 +18,7 @@ def run_process(command):
 
 def commit(repo, message):
 	os.chdir(os.path.join(BASE_PATH, repo))
-	run_process(['git', 'add', 'data.txt', message])
+	run_process(['git', 'add', 'data.txt'])
 	run_process(['git', 'commit', '-m', message])
 	os.chdir(BASE_PATH)
 
