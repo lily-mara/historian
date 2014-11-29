@@ -1,8 +1,17 @@
 #editor {
 	position: absolute;
-	top: 20%;
+	top: 5%;
 	right: 20%;
-	bottom: 10%;
+	bottom: 25%;
+	left: 20%;
+	font-size: 1.2em;
+}
+
+#commit-edit {
+	position: absolute;
+	top: 80%;
+	right: 20%;
+	bottom: 5%;
 	left: 20%;
 	font-size: 1.2em;
 }
