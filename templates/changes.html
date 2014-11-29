@@ -3,7 +3,7 @@
 {% block content %}
 	<ul>
 		{% for message, time in commits %}
-			<li>{{ message }} -- {{ time }}</li>
+			<li>{{ time }} -- {{ message }}</li>
 		{% end %}
 	</ul>
 {% end %}
