@@ -1,23 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<h1>Historian</h1>
-	<h3>Version Control for Regular People</h3>
-
 	<div id="editor">{{ data }}</div>
+	<div id="commit-edit"></div>
 	<a class="submit" href="javascript:void(0)">SUBMIT</a>
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var editor = ace.edit("editor");
-		editor.setShowPrintMargin(false);
-		editor.setHighlightActiveLine(false);
-		editor.getSession().setUseWrapMode(true);
-		editor.setTheme("ace/theme/twilight");
-		editor.getSession().setUseSoftTabs(false);
+		var commit = ace.edit("commit-edit");
+
+		var editors = [editor, commit];
+
+		for (var i = 0; i < 2; i++) {
+			var e = editors[i];
+			e.setShowPrintMargin(false);
+			e.setHighlightActiveLine(false);
+			e.getSession().setUseWrapMode(true);
+			e.setTheme("ace/theme/twilight");
+			e.getSession().setUseSoftTabs(false);
+		};
 
 		$('a.submit').click(function() {
-			$.post('/{{ user }}/{{ repo }}', { 'data': editor.getValue() }, function() {
+			$.post('/{{ user }}/{{ repo }}', { 'data': editor.getValue(), 'commit_message': commit.getValue() }, function() {
 				location.reload();
 			});
 		});
