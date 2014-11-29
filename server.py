@@ -2,12 +2,18 @@
 import os
 import json
 import argparse
+import subprocess
 
 import tornado.ioloop
 import tornado.web
 import tornado.autoreload
 
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
+
+def run_process(command):
+	with subprocess.Popen(command, stdout=subprocess.PIPE) as proc:
+		return proc.stdout.read()
 
 
 def load_json_file(filename):
