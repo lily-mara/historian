@@ -33,17 +33,17 @@ class MainHandler(tornado.web.RequestHandler):
 		self.render('index.html')
 
 
-class RepoHandler(tornado.web.RequestHandler):
+class EditHandler(tornado.web.RequestHandler):
 	def get(self, user, repo):
 		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
 			with open(os.path.join('data', user, repo, 'data.txt')) as data_file:
-				data = ''.join(data_file.readlines()).replace('\n', ' ').replace('$NEWLINE', '\n')
+				data = ''.join(data_file.readlines()).replace('\n', ' ').replace(' $NEWLINE ', '\n')
 			self.render('repo.html', data=data, user=user, repo=repo)
 		else:
 			self.finish('REPO NOT FOUND')
 
 	def post(self, user, repo):
-		data = self.get_argument('data').replace('\n', '$NEWLINE').replace(' ', '\n')
+		data = self.get_argument('data').replace('\n', ' $NEWLINE ').replace(' ', '\n')
 		commit_message = self.get_argument('commit_message')
 		repo_path = os.path.join('data', user, repo)
 		data_path = os.path.join(repo_path, 'data.txt')
@@ -58,7 +58,7 @@ class RepoHandler(tornado.web.RequestHandler):
 
 handlers = [
 	(r'/', MainHandler),
-	(r'/([^/]+)/([^/]+)', RepoHandler),
+	(r'/([^/]+)/([^/]+)/edit', EditHandler),
 ]
 
 settings = {
