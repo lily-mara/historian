@@ -45,7 +45,7 @@ class RepoHandler(tornado.web.RequestHandler):
 	def post(self, user, repo):
 		data = self.get_argument('data').replace('\n', '$NEWLINE').replace(' ', '\n')
 		commit_message = self.get_argument('commit_message')
-		repo_path = data_file('data', user, repo)
+		repo_path = os.path.join('data', user, repo)
 		data_path = os.path.join(repo_path, 'data.txt')
 
 		if os.path.exists(data_path):
