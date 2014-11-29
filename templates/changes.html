@@ -3,7 +3,7 @@
 {% block content %}
 	<ul>
 		{% for c in commits %}
-			<li>{{ c.time }} -- <a href="change/{{ c.ref_hash }}">{{ c.message }}</a></li>
+			<li>{{ c.time_string }} -- <a href="change/{{ c.ref_hash }}">{{ c.message }}</a></li>
 		{% end %}
 	</ul>
 {% end %}
