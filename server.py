@@ -36,6 +36,13 @@ class MainHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
 
+class SingleCommitHandler(tornado.web.RequestHandler):
+	def get(self, user, repo, commit):
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, 'data.txt')):
+			self.render('commit.html', commit=commit, user=user, repo=repo)
+		else:
+			self.finish('REPO NOT FOUND')
+
 
 class CommitsHandler(tornado.web.RequestHandler):
 	def get(self, user, repo):
@@ -94,6 +101,7 @@ handlers = [
 	(r'/', MainHandler),
 	(r'/([^/]+)/([^/]+)/edit', EditHandler),
 	(r'/([^/]+)/([^/]+)/change', CommitsHandler),
+	(r'/([^/]+)/([^/]+)/change/([^/]+)', SingleCommitHandler),
 ]
 
 settings = {
