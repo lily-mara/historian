@@ -132,7 +132,7 @@ class EditHandler(tornado.web.RequestHandler):
 			self.finish('REPO NOT FOUND')
 
 	def post(self, user, repo):
-		data = self.get_argument('data').replace('\n', ' $NEWLINE ').replace(' ', '\n')
+		data = self.get_argument('data').replace('\n', ' $NEWLINE ').replace(' ', '\n') + '\n'
 		commit_message = self.get_argument('commit_message')
 		repo_path = os.path.join('data', user, repo)
 		data_path = os.path.join(repo_path, 'data.txt')
