@@ -2,8 +2,8 @@
 
 {% block content %}
 	<ul>
-		{% for message, time in commits %}
-			<li>{{ time }} -- {{ message }}</li>
+		{% for message, time, commit_hash in commits %}
+			<li>{{ time }} -- <a href="change/{{ commit_hash }}">{{ message }}</a></li>
 		{% end %}
 	</ul>
 {% end %}
