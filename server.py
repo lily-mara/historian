@@ -3,6 +3,7 @@ import os
 import json
 import argparse
 import subprocess
+import locale
 
 import tornado.ioloop
 import tornado.web
@@ -12,8 +13,9 @@ BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
 def run_process(command):
+	encoding = locale.getdefaultlocale()[1]
 	with subprocess.Popen(command, stdout=subprocess.PIPE) as proc:
-		return proc.stdout.read()
+		return [line.decode(encoding) for line in  proc.stdout]
 
 
 def commit(repo, message):
@@ -32,6 +34,27 @@ class MainHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
 
+
+class CommitsHandler(tornado.web.RequestHandler):
+	def get(self, user, repo):
+		self.user = user
+		self.repo = repo
+
+		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
+			commits = self.commits()
+			self.render('changes.html', commits=commits, user=user, repo=repo)
+		else:
+			self.finish('REPO NOT FOUND')
+
+	def commits(self):
+		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
+		commit_text = run_process(['git', 'log', '--all', '--pretty="%ci -- %s"'])
+		os.chdir(BASE_PATH)
+		print(commit_text)
+
+		commit_objs = []
+
+		return commit_objs
 
 class EditHandler(tornado.web.RequestHandler):
 	def get(self, user, repo):
@@ -59,6 +82,7 @@ class EditHandler(tornado.web.RequestHandler):
 handlers = [
 	(r'/', MainHandler),
 	(r'/([^/]+)/([^/]+)/edit', EditHandler),
+	(r'/([^/]+)/([^/]+)/change', CommitsHandler),
 ]
 
 settings = {
