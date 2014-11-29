@@ -1,16 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<div id="editor">{{ commit }}</div>
-
-	<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script>
-		var editor = ace.edit("editor");
-
-		editor.setShowPrintMargin(false);
-		editor.setHighlightActiveLine(false);
-		editor.getSession().setUseWrapMode(true);
-		editor.setTheme("ace/theme/twilight");
-		editor.getSession().setUseSoftTabs(false);
-	</script>
+	{% autoescape off %}
+		<div id="commit">{{ commit.diff }}</div>
+	{% autoescape %}
 {% end %}
