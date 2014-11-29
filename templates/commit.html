@@ -2,6 +2,10 @@
 
 {% block content %}
 	{% autoescape off %}
-		<div id="commit">{{ commit.diff }}</div>
+		<div id="commit">
+			<div id="commit-inner">
+				{{ commit.diff }}
+			</div>
+		</div>
 	{% autoescape %}
 {% end %}
