@@ -60,7 +60,7 @@ class CommitsHandler(tornado.web.RequestHandler):
 		for commit in commit_text:
 			line = re.match('"([^"]+)"', commit.split('\n')[0]).group(1)
 			commit_time = datetime.strptime(message.search(line).group(1), '%Y-%m-%d %H:%M:%S %z')
-			commit_message = message.search(line).group(2)
+			commit_message = '"{}"'.format(message.search(line).group(2))
 			time_string = commit_time.strftime('%Y-%m-%d - %H:%M')
 
 			commit_objs.append((commit_message, time_string))
