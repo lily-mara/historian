@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<ul>
+		{% for message, time in commits %}
+			<li>{{ message }} -- {{ time }}</li>
+		{% end %}
+	</ul>
+{% end %}
