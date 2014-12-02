@@ -185,7 +185,7 @@ class RepoHandler(tornado.web.RequestHandler):
 	def post(self, user, repo):
 		path = os.path.join(BASE_PATH, 'data', user, repo)
 
-		if os.path.exists(os.path.join(BASE_PATH, 'data', user):
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user)):
 			self.finish('USER {} DOES NOT EXIST')
 
 		if not os.path.exists(path):
