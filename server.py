@@ -157,11 +157,25 @@ class EditHandler(tornado.web.RequestHandler):
 		else:
 			self.finish('REPO NOT FOUND')
 
+
+class UserListHandler(tornado.web.RequestHandler):
+	def get(self):
+		users = os.listdir(os.path.join('data'))
+		self.render('users.html', users=users)
+
+
+class UserHandler(tornado.web.RequestHandler):
+	def get(self, user):
+		repos = os.listdir(os.path.join('data', user))
+		self.render('user.html', repos=repos, user=user)
+
+
 handlers = [
-	(r'/', MainHandler),
+	(r'/', UserListHandler),
 	(r'/([^/]+)/([^/]+)/edit', EditHandler),
 	(r'/([^/]+)/([^/]+)/change', CommitsHandler),
 	(r'/([^/]+)/([^/]+)/change/([^/]+)', SingleCommitHandler),
+	(r'/([^/]+)', UserHandler),
 ]
 
 settings = {
