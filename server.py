@@ -62,7 +62,7 @@ class Commit:
 		for index, line in enumerate(commit_text):
 			if re.match('@@ .+ @@', line):
 				file_start_line = index + 1
-		
+
 		for line in commit_text[file_start_line:]:
 			if not re.match('^[-+]$', line):
 				line = line.replace('\n', '')
