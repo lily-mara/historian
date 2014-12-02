@@ -56,19 +56,27 @@ class Commit:
 	@property
 	def diff(self):
 		change_lines = []
-		for line in self.commit_text():
-			if re.match('^[+-]', line):
-				if not re.match('^[+-]{3}', line):
-					if not re.match('^[-+]$', line):
-						line = line.replace('\n', '')
-						line = line.replace('$NEWLINE', '</br>')
-						change_word = re.search('^[+-](.*)', line).group(1)
-						if re.match('^\+', line):
-							line = '<span class="addition">{}</span>'.format(change_word)
-						else:
-							line = '<span class="deletion">{}</span>'.format(change_word)
+		file_start_line = 0
+		commit_text = self.commit_text()
 
-						change_lines.append(line)
+		for index, line in enumerate(commit_text):
+			if re.match('@@ .+ @@', line):
+				file_start_line = index + 1
+		
+		for line in commit_text[file_start_line:]:
+			if not re.match('^[-+]$', line):
+				line = line.replace('\n', '')
+				line = line.replace('$NEWLINE', '</br>')
+				change_word = re.search('^[-\\s+](.*)', line).group(1)
+
+				if re.match('^\+', line):
+					line = '<span class="addition">{}</span>'.format(change_word)
+				elif re.match('^-', line):
+					line = '<span class="deletion">{}</span>'.format(change_word)
+				else:
+					line = '<span class="normal">{}</span>'.format(change_word)
+
+				change_lines.append(line)
 
 		return '\n'.join(change_lines)
 
