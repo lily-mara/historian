@@ -29,6 +29,10 @@ span.deletion {
 	color: red;
 }
 
+span.normal {
+	color: white;
+}
+
 div#commit {
 	position: absolute;
 	top: 5%;
