@@ -6,4 +6,14 @@
 			<li><a href="/{{ user }}">{{ user }}</a></li>
 		{% end %}
 	</ul>
+
+	<span>Enter a new user name: </span>
+	<input type="text" id="new-user-name"></input>
+	<input type="submit" id="submit"></input>
+
+	<script type="text/javascript">
+		$('input#submit').click(function() {
+			$.post('/' + $('input#new-user-name').val() );
+		});
+	</script>
 {% end %}
