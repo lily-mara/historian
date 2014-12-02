@@ -6,4 +6,14 @@
 			<li><a href="/{{ user }}/{{ repo }}/edit">{{ repo }}</a></li>
 		{% end %}
 	</ul>
+
+	<span>Enter a new project name: </span>
+	<input type="text" id="new-project-name"></input>
+	<input type="submit" id="submit"></input>
+
+	<script type="text/javascript">
+		$('input#submit').click(function() {
+			$.post('/{{ user }}/' + $('input#new-project-name').val() );
+		});
+	</script>
 {% end %}
