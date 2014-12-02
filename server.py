@@ -166,8 +166,19 @@ class UserListHandler(tornado.web.RequestHandler):
 
 class UserHandler(tornado.web.RequestHandler):
 	def get(self, user):
-		repos = os.listdir(os.path.join('data', user))
-		self.render('user.html', repos=repos, user=user)
+		if os.path.exists(os.path.join('data', user)):
+			repos = os.listdir(os.path.join('data', user))
+			self.render('user.html', repos=repos, user=user)
+		else:
+			self.finish('REPO NOT FOUND')
+
+	def post(self, user):
+		path = os.path.join(BASE_PATH, 'data', user)
+		if not os.path.exists(path):
+			os.mkdir(path)
+			UserListHandler.get(self)
+		else:
+			self.finish('USER {} HAS EXISTING ACCOUNT'.format(user))
 
 
 handlers = [
