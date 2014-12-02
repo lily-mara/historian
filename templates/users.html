@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<ul>
+		{% for user in users %}
+			<li><a href="/{{ user }}">{{ user }}</a></li>
+		{% end %}
+	</ul>
+{% end %}
