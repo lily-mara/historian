@@ -70,11 +70,11 @@ class Commit:
 				change_word = re.search('^[-\\s+](.*)', line).group(1)
 
 				if re.match('^\+', line):
-					line = '<span class="addition">{}</span>'.format(change_word)
+					line = '<span class="changes addition">{}</span>'.format(change_word)
 				elif re.match('^-', line):
-					line = '<span class="deletion">{}</span>'.format(change_word)
+					line = '<span class="changes deletion">{}</span>'.format(change_word)
 				else:
-					line = '<span class="normal">{}</span>'.format(change_word)
+					line = '<span class="changes normal">{}</span>'.format(change_word)
 
 				change_lines.append(line)
 
