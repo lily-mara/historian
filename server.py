@@ -49,7 +49,7 @@ class Commit:
 
 	def commit_text(self):
 		os.chdir(os.path.join(BASE_PATH, 'data', self.user, self.repo))
-		commit_show = run_process(['git', 'show', self.ref_hash, '--pretty=%ci -- %s -- %H'])
+		commit_show = run_process(['git', 'show', self.ref_hash, '-U999999999', '--pretty=%ci -- %s -- %H'])
 		os.chdir(BASE_PATH)
 		return commit_show
 
