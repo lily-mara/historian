@@ -63,6 +63,7 @@ class Commit:
 			if re.match('@@ .+ @@', line):
 				file_start_line = index + 1
 
+		print(commit_text)
 		for line in commit_text[file_start_line:]:
 			if not re.match('^[-+]$', line):
 				line = line.replace('\n', '')
@@ -98,7 +99,7 @@ class MainHandler(tornado.web.RequestHandler):
 
 class SingleCommitHandler(tornado.web.RequestHandler):
 	def get(self, user, repo, commit_hash):
-		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, 'data.txt')):
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, '.git')):
 			c = Commit(ref_hash=commit_hash, user=user, repo=repo)
 			self.render('commit.html', commit=c, user=user, repo=repo)
 		else:
@@ -110,7 +111,7 @@ class CommitsHandler(tornado.web.RequestHandler):
 		self.user = user
 		self.repo = repo
 
-		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, 'data.txt')):
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user, repo, '.git')):
 			commits = self.commits()
 			self.render('changes.html', commits=commits, user=user, repo=repo)
 		else:
@@ -132,9 +133,12 @@ class CommitsHandler(tornado.web.RequestHandler):
 
 class EditHandler(tornado.web.RequestHandler):
 	def get(self, user, repo):
-		if os.path.exists(os.path.join('data', user, repo, 'data.txt')):
-			with open(os.path.join('data', user, repo, 'data.txt')) as data_file:
-				data = ''.join(data_file.readlines()).replace('\n', ' ').replace(' $NEWLINE ', '\n')
+		if os.path.exists(os.path.join('data', user, repo, '.git')):
+			try:
+				with open(os.path.join('data', user, repo, 'data.txt')) as data_file:
+					data = ''.join(data_file.readlines()).replace('\n', ' ').replace(' $NEWLINE ', '\n')
+			except FileNotFoundError:
+				data = ''
 			self.render('repo.html', data=data, user=user, repo=repo)
 		else:
 			self.finish('REPO NOT FOUND')
@@ -145,7 +149,7 @@ class EditHandler(tornado.web.RequestHandler):
 		repo_path = os.path.join('data', user, repo)
 		data_path = os.path.join(repo_path, 'data.txt')
 
-		if os.path.exists(data_path):
+		if os.path.exists(os.path.join(repo_path, '.git')):
 			with open(data_path, 'w') as data_file:
 				data_file.writelines(data)
 			commit(repo_path, commit_message)
