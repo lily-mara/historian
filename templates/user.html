@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<ul>
+		{% for repo in repos %}
+			<li><a href="/{{ user }}/{{ repo }}/edit">{{ repo }}</a></li>
+		{% end %}
+	</ul>
+{% end %}
