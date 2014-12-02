@@ -181,12 +181,29 @@ class UserHandler(tornado.web.RequestHandler):
 			self.finish('USER {} HAS EXISTING ACCOUNT'.format(user))
 
 
+class RepoHandler(tornado.web.RequestHandler):
+	def post(self, user, repo):
+		path = os.path.join(BASE_PATH, 'data', user, repo)
+
+		if os.path.exists(os.path.join(BASE_PATH, 'data', user):
+			self.finish('USER {} DOES NOT EXIST')
+
+		if not os.path.exists(path):
+			os.mkdir(path)
+			os.chdir(path)
+			run_process(['git', 'init'])
+			os.chdir(BASE_PATH)
+			EditHandler.get(self, user, repo)
+		else:
+			self.finish('PROJECT {}/{} EXISTS'.format(user, repo))
+
 handlers = [
 	(r'/', UserListHandler),
 	(r'/([^/]+)/([^/]+)/edit', EditHandler),
 	(r'/([^/]+)/([^/]+)/change', CommitsHandler),
 	(r'/([^/]+)/([^/]+)/change/([^/]+)', SingleCommitHandler),
 	(r'/([^/]+)', UserHandler),
+	(r'/([^/]+)/([^/]+)', RepoHandler),
 ]
 
 settings = {
