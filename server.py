@@ -14,6 +14,15 @@ import tornado.autoreload
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
+def sanitize_line(line):
+	line = line.replace('\'', '&#39;')
+	line = line.replace('>', '&gt;')
+	line = line.replace('<', '&lt;')
+	line = line.replace('=', '&equals;')
+
+	return line
+
+
 def run_process(command):
 	encoding = locale.getdefaultlocale()[1]
 	with subprocess.Popen(command, stdout=subprocess.PIPE) as proc:
@@ -65,6 +74,7 @@ class Commit:
 
 		for line in commit_text[file_start_line:]:
 			if not re.match('^[-+]$', line):
+				line = sanitize_line(line)
 				line = line.replace('\n', '')
 				line = line.replace('$NEWLINE', '</br>')
 				change_word = re.search('^[-\\s+](.*)', line).group(1)
